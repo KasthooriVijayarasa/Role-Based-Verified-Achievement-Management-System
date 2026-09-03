@@ -77,7 +77,6 @@ Shared via QR code / link (read-only)
 | **Sports Officer** | Review & approve/reject sports achievements |
 | **Faculty Coordinator / Lecturer** | Review & approve/reject academic/faculty achievements; maintain Faculty Award winner records |
 | **University Admin** | Manage users, roles, faculties, verifier assignments, system settings |
-| **External Viewer** | Read-only access to a shared Passport via QR/link (no login) |
 
 ## Tech Stack
 
