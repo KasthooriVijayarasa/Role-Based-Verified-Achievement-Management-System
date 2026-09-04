@@ -1,4 +1,4 @@
-# Faculty Award Certificate Verification System
+# UniMerit-Faculty Award Certificate Verification System
 
 A digital system that replaces the paper-based **Faculty of Applied Science Award application form**. In-charge staff upload student certificate/achievement details, the system issues each certificate a unique **Certificate ID**, and students verify and claim their certificates onto their profile using that ID.
 
