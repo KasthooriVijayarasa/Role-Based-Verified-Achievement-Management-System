@@ -1,7 +1,6 @@
-# Role-Based Verified Achievement Management System
-### (Student Passport)
+# Faculty Award Certificate Verification System
 
-A centralized digital profile where university students record academic and extracurricular achievements — skills, projects, certifications, competitions, club activities, sports, and volunteering — and have them **verified by authorized university personnel** before they count as trustworthy record.
+A digital system that replaces the paper-based **Faculty of Applied Science Award application form**. In-charge staff upload student certificate/achievement details, the system issues each certificate a unique **Certificate ID**, and students verify and claim their certificates onto their profile using that ID.
 
 > IT3162 – Group Project · Group 18 · Department of Physical Science, Faculty of Applied Science, University of Vavuniya
 > Supervisor: Mrs. S. Sobana
@@ -11,8 +10,8 @@ A centralized digital profile where university students record academic and extr
 ## Table of Contents
 
 - [Overview](#overview)
+- [Award Categories](#award-categories)
 - [Core Workflow](#core-workflow)
-- [Key Features](#key-features)
 - [User Roles](#user-roles)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -27,57 +26,57 @@ A centralized digital profile where university students record academic and extr
 
 ## Overview
 
-A student's academic transcript only reflects grades and credits — it says nothing about the skills, projects, certifications, competitions, club involvement, sports achievements, and volunteering a student builds up over their university life. Those records currently live scattered across departments, clubs, offices, and personal certificates.
+The Faculty of Applied Science currently tracks student certificates and award-worthy achievements through a **paper application form**, filled in by students and countersigned by mentors, the Dean's office, and the Selection Committee. This process is slow, hard to search, and easy to lose track of.
 
-**Student Passport** brings all of this into a single digital profile per student. Students submit achievements with supporting proof; each submission is routed automatically to the correct authorized verifier (Club/Society Coordinator, Sports Officer, or Faculty Coordinator/Lecturer) based on its category. Once approved, the achievement becomes a **verified record** in the student's Passport, which can be shared read-only via a QR code or link.
+This project digitalizes that process. Instead of the student initiating the paperwork, an **admin/in-charge person uploads the certificate or achievement details** on the student's behalf and the system generates a unique **Certificate ID**. The student then enters that ID to raise a verification request, which goes to the relevant in-charge person for approval. Once approved, the certificate appears as a verified entry on the student's profile — mirroring the categories on the official Faculty Award form.
+
+## Award Categories
+
+The system is built around the same 6 categories used in the Faculty Award application form's extracurricular activities section:
+
+1. **Leadership** — Office bearer of a recognized national body or university/faculty organization
+2. **Community Service & Good Citizenship** — Volunteering, disaster relief, exceptional civic contribution
+3. **Sports Achievements** — World University Games, National Games, international/inter-university/inter-faculty events
+4. **Creativity & Exceptional Ability (Aesthetic/Technical)** — Competitions, graduating performances, public/media performances
+5. **Conferences, Seminars & Publications** — Peer-reviewed publications, conference presentations, authored books/chapters
+6. **Other Activities** — Any other certified university-career activity not covered above
 
 ## Core Workflow
 
 ```
-Student submits achievement + proof
+Admin / In-charge person uploads certificate + student details
         │
         ▼
-System identifies category → routes to correct verifier
+System generates a unique Certificate ID
         │
         ▼
-Verifier reviews proof
+Student enters Certificate ID → requests verification
+        │
+        ▼
+Request routed to the relevant in-charge person (by category)
+        │
+        ▼
+In-charge person checks certificate/details
         │
    ┌────┴────┐
    ▼         ▼
 Approve    Reject (+ reason)
    │         │
    ▼         ▼
-Verified   Student edits & resubmits
-   │
-   ▼
-Student Passport updated
-   │
-   ▼
-Shared via QR code / link (read-only)
+Certificate shown   Student rechecks ID /
+on student profile  contacts admin
 ```
-
-## Key Features
-
-- **Student Profile** — one centralized profile per student.
-- **Achievement Submission** — category, title, description, date, supporting proof.
-- **Document / Proof Management** — upload and store certificates/evidence per achievement.
-- **Role-Based Verification** — submissions auto-routed to the correct authorized verifier by category.
-- **Approval / Rejection Workflow** — verifiers approve or reject with a mandatory reason on rejection; students can resubmit.
-- **Verification History** — full audit trail of who verified what, and when.
-- **Verified Student Passport** — structured, read-only view of all verified achievements.
-- **QR Code / Shareable Link** — external viewers (e.g. employers) get read-only access.
-- **Faculty Award Tracking** *(coordinator-only)* — coordinators maintain a separate record of certificate/award winners mapped to the Faculty of Applied Science Dean's/Vice-Chancellor's Award categories, to support end-of-year nominations.
 
 ## User Roles
 
 | Role | Access |
 |---|---|
-| **Student** | Manage profile, submit achievements, upload proof, track status, resubmit, view & share Passport |
-| **Club/Society Coordinator** | Review & approve/reject club/society achievements |
-| **Sports Officer** | Review & approve/reject sports achievements |
-| **Faculty Coordinator / Lecturer** | Review & approve/reject academic/faculty achievements; maintain Faculty Award winner records |
-| **University Admin** | Manage users, roles, faculties, verifier assignments, system settings |
-| **External Viewer** | Read-only access to a shared Passport via QR/link (no login) |
+| **Admin / In-charge (uploader)** | Upload certificate/achievement records, generate Certificate IDs, manage category assignment |
+| **In-charge Person (Verifier)** | Review certificates routed to their category, approve/reject with reason |
+| **Student** | Enter a Certificate ID to request verification, view their verified profile |
+| **University Admin** | Manage users, roles, categories, and system configuration |
+
+*(Roles to be confirmed with supervisor as the design is finalized — e.g. whether "Admin" and "In-charge/Verifier" are the same person or separate roles per category.)*
 
 ## Tech Stack
 
@@ -87,15 +86,15 @@ Shared via QR code / link (read-only)
 | Backend | Node.js + Express.js |
 | Database | MongoDB (Mongoose ODM) |
 | Authentication | JWT |
-| API Testing | Postman |
-| UI/UX Design | Figma |
-| QR Generation | `qrcode` (npm) |
+| Certificate ID Generation | UUID / custom ID generator (backend) |
 | Version Control | Git + GitHub |
+
+*(Stack carried over from the original proposal — confirm with supervisor if unchanged for the revised scope.)*
 
 ## Project Structure
 
 ```
-Role-Based-Verified-Achievement-Management-System/
+Faculty-Award-Certificate-Verification-System/
 ├── client/                  # React + Vite frontend
 │   ├── src/
 │   └── ...
@@ -106,10 +105,10 @@ Role-Based-Verified-Achievement-Management-System/
 │   │   ├── controllers/     # Route logic
 │   │   ├── routes/          # Express routers
 │   │   ├── middleware/      # Auth, role guards, error handling
-│   │   ├── utils/           # QR generation, helpers
+│   │   ├── utils/           # Certificate ID generator, helpers
 │   │   └── app.js
 │   └── package.json
-├── docs/                    # Proposal, presentation, diagrams
+├── docs/                    # Proposal, presentation, faculty award form reference
 └── README.md
 ```
 
@@ -119,61 +118,28 @@ Core entities (see `server/src/models/`):
 
 - **User** — `userId, name, email, password, role, faculty`
 - **StudentProfile** — `studentId, userId, faculty, degree, profileInfo`
-- **Achievement** — `achievementId, studentId, category, title, description, date, proofDocument, status, verifierId, rejectionReason`
-- **Verification** — `verificationId, achievementId, verifierId, action, reason, timestamp`
-- **CertificateWinner** *(coordinator-managed, feeds Faculty Award nominations)* — `winnerId, studentId, achievementId, awardCategory, eventName, positionOrPrize, year, involvementRole, description, proofDocument, verifiedByCoordinatorId, verificationDate`
+- **Certificate** — `certificateId (unique, system-generated), studentIdentifier, category, title, description, issueDate, uploadedByAdminId, proofDocument, status (unclaimed / pending / verified / rejected), claimedByStudentId, verifierId, verificationDate, rejectionReason`
+- **Verification** — `verificationId, certificateId, verifierId, action, reason, timestamp`
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js ≥ 18
+- Node.js
 - MongoDB (local or Atlas)
-
-### Backend setup
-
-```bash
-cd server
-npm install
-cp .env.example .env   # fill in your values, see below
-npm run dev
-```
-
-### Frontend setup
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-## Environment Variables
-
-Create a `.env` file inside `server/`:
-
-```
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/student-passport
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
-```
-
 ## API Overview
 
 | Method | Endpoint | Description | Access |
 |---|---|---|---|
 | POST | `/api/auth/login` | Login, returns JWT | Public |
-| GET | `/api/students/:id/profile` | Get student profile | Student, Admin |
-| POST | `/api/achievements` | Submit a new achievement | Student |
-| GET | `/api/achievements/pending` | List submissions pending review | Verifier |
-| PATCH | `/api/achievements/:id/approve` | Approve an achievement | Verifier |
-| PATCH | `/api/achievements/:id/reject` | Reject an achievement (reason required) | Verifier |
-| GET | `/api/passport/:studentId` | Get verified Passport (public read-only) | Public (via link/QR) |
-| GET | `/api/passport/:studentId/qrcode` | Generate QR code for Passport | Student |
-| GET | `/api/coordinators/certificate-winners` | List certificate/award winners | Coordinator |
-| POST | `/api/coordinators/certificate-winners` | Add a winner record | Coordinator |
+| POST | `/api/certificates` | Upload a certificate/achievement, generates Certificate ID | Admin / In-charge |
+| GET | `/api/certificates` | List all certificates (filter by category/status) | Admin / In-charge |
+| POST | `/api/certificates/:certificateId/claim` | Student submits Certificate ID to request verification | Student |
+| GET | `/api/verifications/pending` | List verification requests pending review | Verifier |
+| PATCH | `/api/verifications/:id/approve` | Approve a certificate verification request | Verifier |
+| PATCH | `/api/verifications/:id/reject` | Reject a request (reason required) | Verifier |
+| GET | `/api/students/:id/profile` | Get student profile with verified certificates | Student, Admin |
 
-*(Full route list documented as the backend is implemented.)*
+*(Full route list to be finalized as the backend is implemented.)*
 
 ## Team
 
